@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Eye } from 'lucide-react';
 
-const ProductCard = ({ product, onAddToCart, onProductClick }) => {
+const ProductCard = ({ product, onAddToCart, onProductClick, onQuickView }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
-      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={() => onProductClick(product)}
     >
       <div className="p-6">
@@ -24,6 +29,20 @@ const ProductCard = ({ product, onAddToCart, onProductClick }) => {
           В корзину
         </button>
       </div>
+
+      {/* Кнопка быстрого просмотра при наведении */}
+      {isHovered && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onQuickView(product);
+          }}
+          className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-all duration-200 hover:scale-110 animate-fadeIn"
+          title="Быстрый просмотр"
+        >
+          <Eye size={20} className="text-blue-600" />
+        </button>
+      )}
     </div>
   );
 };

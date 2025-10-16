@@ -1,8 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CartUtils from '../utils/CartUtils';
 
+const CART_STORAGE_KEY = 'techstore_cart';
+
 const useCart = () => {
-  const [cart, setCart] = useState([]);
+  // Инициализация корзины из LocalStorage
+  const [cart, setCart] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Ошибка загрузки корзины из LocalStorage:', error);
+      return [];
+    }
+  });
+
+  // Сохранение корзины в LocalStorage при каждом изменении
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (error) {
+      console.error('Ошибка сохранения корзины в LocalStorage:', error);
+    }
+  }, [cart]);
 
   const addToCart = (product) => {
     setCart(prevCart => CartUtils.addItem(prevCart, product));

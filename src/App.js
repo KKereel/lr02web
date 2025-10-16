@@ -10,6 +10,7 @@ import HeroCarousel from './components/ui/HeroCarousel';
 import SearchBar from './components/products/SearchBar';
 import ProductsGrid from './components/products/ProductsGrid';
 import ProductModal from './components/products/ProductModal';
+import QuickViewModal from './components/products/QuickViewModal';
 import Pagination from './components/ui/Pagination';
 import CartSidebar from './components/cart/CartSidebar';
 import OrderModal from './components/cart/OrderModal';
@@ -20,6 +21,7 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showCart, setShowCart] = useState(false);
@@ -39,7 +41,6 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Параллакс эффект при скролле
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -66,14 +67,12 @@ const App = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      {/* Параллакс фоновые элементы */}
       <div 
         className="fixed inset-0 pointer-events-none z-0"
         style={{
           transform: `translateY(${scrollY * 0.7}px)`,
         }}
       >
-        {/* Круги на фоне - большие и яркие */}
         <div className="absolute -top-32 -left-32 w-[700px] h-[700px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, transparent 70%)', filter: 'blur(80px)' }}></div>
         <div className="absolute top-20 right-10 w-[600px] h-[600px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%)', filter: 'blur(70px)' }}></div>
         <div className="absolute top-[600px] left-1/4 w-[650px] h-[650px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, transparent 70%)', filter: 'blur(75px)' }}></div>
@@ -83,7 +82,6 @@ const App = () => {
         <div className="absolute top-[800px] right-10 w-[580px] h-[580px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, transparent 70%)', filter: 'blur(70px)' }}></div>
       </div>
 
-      {/* Контент с нормальной скоростью скролла */}
       <div className="relative z-10">
         <Header
           menuOpen={menuOpen}
@@ -120,6 +118,7 @@ const App = () => {
             products={paginatedProducts}
             onAddToCart={addToCart}
             onProductClick={setSelectedProduct}
+            onQuickView={setQuickViewProduct}
           />
 
           <Pagination
@@ -131,6 +130,13 @@ const App = () => {
 
         <Footer />
       </div>
+
+      <QuickViewModal
+        product={quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        onAddToCart={addToCart}
+        onOpenFull={setSelectedProduct}
+      />
 
       <ProductModal
         product={selectedProduct}
@@ -182,6 +188,12 @@ const App = () => {
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }

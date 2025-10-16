@@ -1,5 +1,5 @@
 export const PRODUCTS_DATA = [
-  { id: 1, name: 'iPhone 17 Pro', category: 'smartphones', price: 89990, image: '📱', description: 'Новейший флагман от Apple с титановым корпусом', rating: 5 },
+  { id: 1, name: 'iPhone 17 Pro', category: 'smartphones', price: 89990, image: '📱', description: 'Новейший флагман от Apple с титановым корпусом, крутыми камерами, гигантским аккумулятором и самым лучшим экраном в линейке💤', rating: 5 },
   { id: 2, name: 'Samsung Galaxy S25', category: 'smartphones', price: 74990, image: '📱', description: 'Мощный Android-смартфон с ИИ', rating: 5 },
   { id: 3, name: 'MacBook Air M3', category: 'laptops', price: 129990, image: '💻', description: 'Ультратонкий ноутбук для работы и учебы', rating: 5 },
   { id: 4, name: 'Dell XPS 15', category: 'laptops', price: 119990, image: '💻', description: 'Профессиональный ноутбук с 4K дисплеем', rating: 4 },
