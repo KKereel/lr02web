@@ -2,12 +2,19 @@ import React from 'react';
 import { Trash2 } from 'lucide-react';
 
 const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
+  const itemTotal = item.price * item.quantity;
+  
   return (
     <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
       <div className="text-4xl">{item.image}</div>
       <div className="flex-1">
         <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-blue-600 font-bold">{item.price.toLocaleString()}₽</p>
+        <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <span>{item.price.toLocaleString()}₽</span>
+          <span>×</span>
+          <span>{item.quantity}</span>
+        </div>
+        <p className="text-blue-600 font-bold text-lg mt-1">{itemTotal.toLocaleString()}₽</p>
         <div className="flex items-center space-x-2 mt-2">
           <button
             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}

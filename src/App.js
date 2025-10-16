@@ -16,6 +16,7 @@ import Pagination from './components/ui/Pagination';
 import CartSidebar from './components/cart/CartSidebar';
 import OrderModal from './components/cart/OrderModal';
 import ChatBot from './components/ui/ChatBot';
+import SuccessModal from './components/ui/SuccessModal.js';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +29,7 @@ const App = () => {
   const [showCart, setShowCart] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [isHomePage, setIsHomePage] = useState(true); 
 
@@ -52,7 +54,6 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  //  обновление заголовка вкладки
   useEffect(() => {
     if (selectedProduct) {
       document.title = `${selectedProduct.name} - TechStore`;
@@ -84,10 +85,14 @@ const App = () => {
   const handleOrderComplete = () => {
     clearCart();
     setShowOrderModal(false);
-    alert('Спасибо за заказ! Мы свяжемся с вами в ближайшее время.');
+    setShowSuccessModal(true);
   };
 
-  //  функции навигации
+  const handleSuccessClose = () => {
+    setShowSuccessModal(false);
+    handleGoToCatalog();
+  };
+
   const handleGoToHome = () => {
     setIsHomePage(true);
     setSelectedCategory('all');
@@ -216,6 +221,11 @@ const App = () => {
         cart={cart}
         totalPrice={totalPrice}
         onOrderComplete={handleOrderComplete}
+      />
+
+      <SuccessModal
+        show={showSuccessModal}
+        onClose={handleSuccessClose}
       />
 
       <ChatBot
