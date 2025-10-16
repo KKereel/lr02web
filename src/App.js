@@ -7,6 +7,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Breadcrumbs from './components/layout/Breadcrumbs';
 import HeroCarousel from './components/ui/HeroCarousel';
+import HomePage from './components/pages/HomePage';
 import SearchBar from './components/products/SearchBar';
 import ProductsGrid from './components/products/ProductsGrid';
 import ProductModal from './components/products/ProductModal';
@@ -28,6 +29,7 @@ const App = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [isHomePage, setIsHomePage] = useState(true); 
 
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice, totalItems } = useCart();
   const { messages, sendMessage } = useChat();
@@ -50,6 +52,26 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  //  обновление заголовка вкладки
+  useEffect(() => {
+    if (selectedProduct) {
+      document.title = `${selectedProduct.name} - TechStore`;
+    } else if (searchQuery) {
+      document.title = `Поиск: "${searchQuery}" - TechStore`;
+    } else if (isHomePage) {
+      document.title = 'TechStore - Главная';
+    } else if (selectedCategory === 'all') {
+      document.title = 'Каталог - TechStore';
+    } else {
+      const categoryNames = {
+        smartphones: 'Смартфоны',
+        laptops: 'Ноутбуки',
+        audio: 'Аудио'
+      };
+      document.title = `${categoryNames[selectedCategory] || 'Каталог'} - TechStore`;
+    }
+  }, [selectedProduct, searchQuery, isHomePage, selectedCategory]);
+
   const filteredProducts = ProductFilter.filter(PRODUCTS_DATA, selectedCategory, searchQuery);
   const totalPages = ProductFilter.getTotalPages(filteredProducts, itemsPerPage);
   const paginatedProducts = ProductFilter.paginate(filteredProducts, currentPage, itemsPerPage);
@@ -63,6 +85,27 @@ const App = () => {
     clearCart();
     setShowOrderModal(false);
     alert('Спасибо за заказ! Мы свяжемся с вами в ближайшее время.');
+  };
+
+  //  функции навигации
+  const handleGoToHome = () => {
+    setIsHomePage(true);
+    setSelectedCategory('all');
+    setSelectedProduct(null);
+    setSearchQuery('');
+    setCurrentPage(1);
+  };
+
+  const handleGoToCatalog = () => {
+    setIsHomePage(false);
+    setSelectedCategory('all');
+    setCurrentPage(1);
+  };
+
+  const handleCategorySelect = (categoryId) => {
+    setIsHomePage(false);
+    setSelectedCategory(categoryId);
+    setCurrentPage(1);
   };
 
   return (
@@ -87,46 +130,58 @@ const App = () => {
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
           selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
+          setSelectedCategory={handleCategorySelect}
           setCurrentPage={setCurrentPage}
           totalItems={totalItems}
           setShowCart={setShowCart}
           showCart={showCart}
+          onGoToHome={handleGoToHome}
         />
 
         <Breadcrumbs
+          isHomePage={isHomePage}
           selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
+          setSelectedCategory={handleCategorySelect}
           selectedProduct={selectedProduct}
           setSelectedProduct={setSelectedProduct}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          onGoToHome={handleGoToHome}
         />
 
-        <HeroCarousel
-          currentSlide={currentSlide}
-          setCurrentSlide={setCurrentSlide}
-        />
-
-        <SearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
-
-        <main className="max-w-7xl mx-auto px-4 pb-12">
-          <ProductsGrid
-            products={paginatedProducts}
-            onAddToCart={addToCart}
-            onProductClick={setSelectedProduct}
-            onQuickView={setQuickViewProduct}
+        {isHomePage ? (
+          <HomePage 
+            onGoToCatalog={handleGoToCatalog} 
+            onCategorySelect={handleCategorySelect} 
           />
+        ) : (
+          <>
+            <HeroCarousel
+              currentSlide={currentSlide}
+              setCurrentSlide={setCurrentSlide}
+            />
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </main>
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+
+            <main className="max-w-7xl mx-auto px-4 pb-12">
+              <ProductsGrid
+                products={paginatedProducts}
+                onAddToCart={addToCart}
+                onProductClick={setSelectedProduct}
+                onQuickView={setQuickViewProduct}
+              />
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </main>
+          </>
+        )}
 
         <Footer />
       </div>

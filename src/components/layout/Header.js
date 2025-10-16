@@ -2,7 +2,7 @@ import React from 'react';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { CATEGORIES } from '../../data/constants';
 
-const Header = ({ menuOpen, setMenuOpen, selectedCategory, setSelectedCategory, setCurrentPage, totalItems, setShowCart, showCart }) => {
+const Header = ({ menuOpen, setMenuOpen, selectedCategory, setSelectedCategory, setCurrentPage, totalItems, setShowCart, showCart, onGoToHome }) => {
   return (
     <header className="bg-white shadow-md sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 py-4">
@@ -11,9 +11,11 @@ const Header = ({ menuOpen, setMenuOpen, selectedCategory, setSelectedCategory, 
             <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden">
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              TechStore
-            </h1>
+            <button onClick={onGoToHome}>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition">
+                TechStore
+              </h1>
+            </button>
           </div>
           
           <nav className="hidden lg:flex space-x-6">
